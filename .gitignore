@@ -30,6 +30,8 @@ compile_commands.json
 
 .npmrc
 
+package-lock.json
+
 # Generated API definitions
 electron-api.json
 electron.d.ts
