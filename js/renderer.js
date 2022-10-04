@@ -47,6 +47,8 @@ async function handleClickActivate() {
         // show loading while in progress
         window.versions.installBleachbit();
         while (responseIsInstalledBleachbit === false) {
+            const information = document.getElementById('loading')
+            information.innerText = `INSTALLING.....`
             try {
                 responseIsInstalledBleachbit = await window.versions.isInstalledBleachbit()
                 
