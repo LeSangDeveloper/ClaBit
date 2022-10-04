@@ -21,7 +21,8 @@
   },
   "dependencies": {
     "bootstrap": "^5.2.2",
-    "electron-squirrel-startup": "^1.0.0"
+    "electron-squirrel-startup": "^1.0.0",
+    "sudo-prompt": "^9.2.1"
   },
   "config": {
     "forge": {
