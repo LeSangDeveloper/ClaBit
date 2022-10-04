@@ -40,18 +40,17 @@ async function handleClickActivate() {
         }
     }
 
-    const responseIsInstalledBleachbit = await window.versions.isInstalledBleachbit();
+    var responseIsInstalledBleachbit = await window.versions.isInstalledBleachbit();
 
     if (responseIsInstalledBleachbit === false) {
         // call ipc Main to download and install Bleachbit from Server
         // show loading while in progress
         window.versions.installBleachbit();
+        const information2 = document.getElementById('loading')
+        information2.innerText = `INSTALLING.....`
         while (responseIsInstalledBleachbit === false) {
-            const information = document.getElementById('loading')
-            information.innerText = `INSTALLING.....`
             try {
                 responseIsInstalledBleachbit = await window.versions.isInstalledBleachbit()
-                
             } catch (error) {
                 responseIsInstalledBleachbit = false;
             }
