@@ -1,5 +1,9 @@
 const {app, BrowserWindow, ipcMain} = require('electron')
 const path = require('path')
+const util = require("util");
+const exec = util.promisify(require('child_process').exec);
+const spawn = util.promisify(require('child_process').spawn);
+const { fork } = require('child_process');
 
 const createWindow = () => {
     const win = new BrowserWindow({
@@ -9,7 +13,12 @@ const createWindow = () => {
             preload: path.join(__dirname, 'preload.js')
         }
     })
-    ipcMain.handle('ping', () => 'pong')
+
+    ipcMain.handle('check-env', async (event, title) => {
+        isClamavInstalled = await isClamavInstalled(); 
+        return isClamavInstalled;
+    })
+
     win.loadFile('index.html')
 }
 
@@ -26,3 +35,8 @@ app.whenReady().then(() => {
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit()
 })
+
+async function isClamavInstalled() {
+    const {stdout, stderr} = await exec('ls')
+    return stdout.includes('clamav')
+}
