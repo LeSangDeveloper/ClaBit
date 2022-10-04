@@ -19,7 +19,9 @@ async function openChildWindow() {
 
 async function handleClickActivate() {
     // TODO: improve later
+    const btnActiveElement = document.querySelector('#buttonActive');
     if (!isHandlingClickActivate) {
+        document.querySelector('#buttonActive').disabled = true
         isHandlingClickActivate = true;
         var responseClamavIsInstalled;
         try {
@@ -64,5 +66,6 @@ async function handleClickActivate() {
         $(".activate-fragment").css("display", "none")
         $(".function-fragment").css("display", "block")
         isHandlingClickActivate = false;
+        document.querySelector('#buttonActive').disabled = false
     }
 }
