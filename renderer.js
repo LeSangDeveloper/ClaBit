@@ -5,12 +5,22 @@ document.querySelector('#buttonActive').addEventListener('click', () => {
     handleClickActivate();
 })
 
+document.querySelector('#buttonClean').addEventListener('click', () => {
+    handleClickClean();
+})
+
+document.querySelector('#buttonScan').addEventListener('click', () => {
+    handleClickScan();
+})
+
 document.querySelector("#linkOpenWindow").addEventListener('click', () => {
     openChildWindow();
 })
 
+
+
 async function openChildWindow() {
-    numberOfWindows = await window.versions.checkOpenWindowNumber();
+    numberOfWindows = await window.invoker.checkOpenWindowNumber();
     console.log(numberOfWindows);
     if (numberOfWindows == 1) {
         window.open("./html/child_window.html", "_blank", "width=1200,height=800");
@@ -19,26 +29,23 @@ async function openChildWindow() {
 
 async function handleClickActivate() {
     // TODO: improve later
-    const btnActiveElement = document.querySelector('#buttonActive');
     if (!isHandlingClickActivate) {
         document.querySelector('#buttonActive').disabled = true
         isHandlingClickActivate = true;
         var responseClamavIsInstalled;
         try {
-            responseClamavIsInstalled = await window.versions.isInstalledClamav()
+            responseClamavIsInstalled = await window.invoker.isInstalledClamav()
         } catch (error) {
             responseClamavIsInstalled = false;
         }
         console.log(responseClamavIsInstalled);
         if (responseClamavIsInstalled === false) {
-            // call ipc Main to download and install Clamav from Server
-            // show loading while in progress
             const information = document.getElementById('loading')
             information.innerText = `INSTALLING.....`
             window.versions.installClamav();
             while (responseClamavIsInstalled === false) {
                 try {
-                    responseClamavIsInstalled = await window.versions.isInstalledClamav()
+                    responseClamavIsInstalled = await window.invoker.isInstalledClamav()
                 
                 } catch (error) {
                     responseClamavIsInstalled = false;
@@ -46,17 +53,15 @@ async function handleClickActivate() {
             }
         }
 
-        var responseIsInstalledBleachbit = await window.versions.isInstalledBleachbit();
+        var responseIsInstalledBleachbit = await window.invoker.isInstalledBleachbit();
 
         if (responseIsInstalledBleachbit === false) {
-            // call ipc Main to download and install Bleachbit from Server
-            // show loading while in progress
             window.versions.installBleachbit();
             const information2 = document.getElementById('loading')
             information2.innerText = `INSTALLING.....`
             while (responseIsInstalledBleachbit === false) {
                 try {
-                    responseIsInstalledBleachbit = await window.versions.isInstalledBleachbit()
+                    responseIsInstalledBleachbit = await window.invoker.isInstalledBleachbit()
                 } catch (error) {
                     responseIsInstalledBleachbit = false;
                 }
@@ -68,4 +73,22 @@ async function handleClickActivate() {
         isHandlingClickActivate = false;
         document.querySelector('#buttonActive').disabled = false
     }
+}
+
+
+async function handleClickScan() {
+    /* 
+        1. call do-scan
+        2. check progress
+        3. while check progress show progress in progress bar
+    */
+   window.versions
+}
+
+async function handleClickClean() {
+    /* 
+        1. call do-clean
+        2. check progress
+        3. while check progress show progress in progress bar
+    */
 }

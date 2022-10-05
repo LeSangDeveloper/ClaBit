@@ -4,7 +4,9 @@ contextBridge.exposeInMainWorld('versions', {
     node: () => process.versions.node,
     chrome: () => process.versions.chrome,
     electron: () => process.versions.electron,
-    
+})
+
+contextBridge.exposeInMainWorld('invoker', {
     isInstalledClamav: () => ipcRenderer.invoke('is-installed-clamav'),
     installClamav: () => ipcRenderer.invoke('install-clamav'),
     checkScanProgress: () => ipcRenderer.invoke('check-scan-progress'),
