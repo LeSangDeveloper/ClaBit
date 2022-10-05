@@ -5,18 +5,14 @@ const exec = util.promisify(require('child_process').exec);
 const spawn = util.promisify(require('child_process').spawn);
 const { fork } = require('child_process');
 const sudo = require('sudo-prompt');
-const linuxCleanModule = require('./js/clean/linux.js') 
-const linuxScanModule = require('./js/scan/linux.js') 
+const setupHandlerModule = require('./js/setupHandler.js')
 
 app.whenReady().then(() => {
     createWindow()
 
-    setupScanHandler();
-    setupCleanHandler();
-    
-    ipcMain.handle('check-open-window-number', async () => {
-        return BrowserWindow.getAllWindows().length;
-    })
+    setupHandlerModule.setupCleanHandler();
+    setupHandlerModule.setupScanHandler();
+    setupHandlerModule.setupCommonHandler();
 
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) 
@@ -40,64 +36,5 @@ const createWindow = () => {
     })
 
     win.loadFile('index.html')
-}
-
-function setupScanHandler() {
-    ipcMain.handle('is-installed-clamav', async () => {
-        isClamavInstalledVar = await isClamavInstalled(); 
-        return isClamavInstalledVar;
-    })
-
-    ipcMain.handle('install-clamav', async () => {
-        installClamav();
-    })
-
-    ipcMain.handle('do-scan', async () => {
-        
-    })
-
-    ipcMain.handle('check-scan-progress', async () => {
-
-    })
-}
-
-function setupCleanHandler() {
-    ipcMain.handle('is-installed-bleachbit', async () => {
-        isBleachbitInstalledVar = await isBleachbitInstalled(); 
-        return isBleachbitInstalledVar;
-    })
-
-    ipcMain.handle('install-bleachbit', async () => {
-        installBleachbit();
-    })
-
-    ipcMain.handle('do-clean', async () => {
-
-    })
-
-    ipcMain.handle('check-clean-progress', async => {
-
-    })
-}
-
-async function isClamavInstalled() {
-    isClamavInstalledVar = linuxScanModule.isInstallClamav(); 
-    return isClamavInstalledVar;
-}
-
-async function installClamav() {
-    linuxScanModule.installClamav()
-}
-
-async function installBleachbit() {
-    await linuxCleanModule.installBleachbit()
-}
-
-async function runBleachBit() {
-    await exec('python3 bleachbit-master/bleachbit.py --list | xargs python3 bleachbit-master/bleachbit.py  --clean')
-}
-
-async function isBleachbitInstalled() {
-    return await linuxCleanModule.isInstallBleachbit()
 }
 
