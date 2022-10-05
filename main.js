@@ -8,6 +8,8 @@ const setupHandlerModule = require('./js/setupHandler.js')
 app.whenReady().then(() => {
     createWindow()
 
+    homePath = app.getPath('home');
+
     setupHandlerModule.setupCleanHandler();
     setupHandlerModule.setupScanHandler();
     setupHandlerModule.setupCommonHandler();

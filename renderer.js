@@ -84,11 +84,6 @@ async function handleClickScan() {
 }
 
 async function handleClickClean() {
-    /* 
-        1. call do-clean
-        2. check progress
-        3. while check progress show progress in progress bar
-    */
     $("#cleanProgressBar").css('width', '0%')
     document.querySelector('#buttonClean').disabled = true
     await window.invoker.initProgressClean()
