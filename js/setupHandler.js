@@ -15,7 +15,7 @@ module.exports.setupScanHandler = () => {
     })
 
     ipcMain.handle('do-scan', async () => {
-        
+        runClamscan();
     })
 
     ipcMain.handle('check-scan-progress', async () => {
@@ -34,7 +34,7 @@ module.exports.setupCleanHandler = () => {
     })
 
     ipcMain.handle('do-clean', async () => {
-
+        runBleachBit();
     })
 
     ipcMain.handle('check-clean-progress', async => {
@@ -57,12 +57,24 @@ async function installClamav() {
     linuxScanModule.installClamav()
 }
 
+async function runClamscan() {
+
+}
+
+async function checkClamScanProgress() {
+
+}
+
 async function installBleachbit() {
     await linuxCleanModule.installBleachbit()
 }
 
 async function runBleachBit() {
     await exec('python3 bleachbit-master/bleachbit.py --list | xargs python3 bleachbit-master/bleachbit.py  --clean')
+}
+
+async function checkCleanProgress() {
+
 }
 
 async function isBleachbitInstalled() {
