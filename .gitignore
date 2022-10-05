@@ -22,7 +22,6 @@ SHASUMS256.txt
 **/package-lock.json
 compile_commands.json
 .envrc
-bleachbit-master
 
 # npm package
 /npm/dist
@@ -59,3 +58,4 @@ patches/mtime-cache.json
 spec/fixtures/logo.png
 
 out
+bleachbit-master

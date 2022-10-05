@@ -1,5 +1,4 @@
 var isHandlingClickActivate = false;
-console.log("render script")
 
 document.querySelector('#buttonActive').addEventListener('click', () => {
     handleClickActivate();
@@ -38,7 +37,7 @@ async function handleClickActivate() {
         } catch (error) {
             responseClamavIsInstalled = false;
         }
-        console.log(responseClamavIsInstalled);
+
         if (responseClamavIsInstalled === false) {
             const information = document.getElementById('loading')
             information.innerText = `INSTALLING.....`
@@ -95,9 +94,7 @@ async function handleClickClean() {
     await window.invoker.initProgressClean()
     window.invoker.doClean();
     var percent = await window.invoker.checkCleanProgress();
-    console.log(percent)
     while (percent < 0.95) {
-        console.log(percent)
         $("#cleanProgressBar").css('width', percent * 100 + '%')
         percent = await window.invoker.checkCleanProgress();
         await sleep(1000);
