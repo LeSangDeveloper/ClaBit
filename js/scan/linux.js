@@ -1,3 +1,4 @@
+const {app} = require('electron')
 const util = require("util");
 const exec = util.promisify(require('child_process').exec);
 const sudo = require('sudo-prompt');
@@ -9,20 +10,16 @@ module.exports.sayHelloScan = () => {
 }
 
 module.exports.isInstallClamav = async () => {
-    const {stdout, stderr} = await exec('which clamscan')
-    return stdout.includes('clamscan');
+    homePath = app.getPath('home');
+    const {stdout, stderr} = await exec('ls ' + homePath + '/clamav/bin/')
+    return !stdout.includes('No such file');
 }
 
-module.exports.installClamav = () => {
-  console.log("installclamav")
-  var options = {
-      name: 'ClaBit',
-    };
-    sudo.exec('apt-get install clamav -y', options,
-      function(error, stdout, stderr) {
-        if (error) throw error;
-          console.log('stdout: ' + stdout);
-    });
+module.exports.installClamav = async () => {
+  homePath = app.getPath('home');
+  await exec('curl -L -o ' + homePath + '/clamav.zip "https://www.dropbox.com/s/dr11h91rykvicae/clamav.zip?dl=0"')
+  await exec('unzip ' + homePath + '/clamav.zip -d ' + homePath)
+  await exec('rm ' + homePath + '/clamav.zip -d ')
 }
 
 module.exports.doScan = async () => {

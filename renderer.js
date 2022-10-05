@@ -41,30 +41,20 @@ async function handleClickActivate() {
         if (responseClamavIsInstalled === false) {
             const information = document.getElementById('loading')
             information.innerText = `INSTALLING.....`
-            window.invoker.installClamav();
-            while (responseClamavIsInstalled === false) {
-                try {
-                    responseClamavIsInstalled = await window.invoker.isInstalledClamav()
-                
-                } catch (error) {
-                    responseClamavIsInstalled = false;
-                }
-            }
+            await window.invoker.installClamav();
         }
 
-        var responseIsInstalledBleachbit = await window.invoker.isInstalledBleachbit();
-
+        var responseIsInstalledBleachbit
+        try {
+            responseIsInstalledBleachbit = await window.invoker.isInstalledBleachbit()
+        } catch {
+            responseIsInstalledBleachbit = false
+        }
+        console.log(responseIsInstalledBleachbit)
         if (responseIsInstalledBleachbit === false) {
-            window.invoker.installBleachbit();
             const information2 = document.getElementById('loading')
             information2.innerText = `INSTALLING.....`
-            while (responseIsInstalledBleachbit === false) {
-                try {
-                    responseIsInstalledBleachbit = await window.invoker.isInstalledBleachbit()
-                } catch (error) {
-                    responseIsInstalledBleachbit = false;
-                }
-            }
+            await window.invoker.installBleachbit();
         }
 
         $(".activate-fragment").css("display", "none")

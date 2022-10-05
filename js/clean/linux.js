@@ -1,3 +1,4 @@
+const {app} = require('electron')
 const util = require("util");
 const exec = util.promisify(require('child_process').exec);
 const sudo = require('sudo-prompt');
@@ -18,25 +19,19 @@ module.exports.sayHelloClean = () => {
 }
 
 module.exports.isInstallBleachbit = async () => {
-    const {stdout, stderr} = await exec('ls')
-    return stdout.includes('bleachbit-master')
+    homePath = app.getPath('home');
+    const {stdout, stderr} = await exec('ls ' + homePath + '/bleachbit-master')
+    return !stdout.includes('No such')
 }
 
 module.exports.installBleachbit = async () => {
-    // await exec('sudo curl https://github.com/bleachbit/bleachbit/archive/refs/heads/master.zip -L -o bleachbit.zip | unzip bleachbit.zip | rm bleachbit.zip')
-    // await exec('unzip bleachbit.zip')
-    // await exec('rm bleachbit.zip')
-    var options = {
-        name: 'ClaBit',
-      };
-    const currentPath = await returnCurrentPath();
-    const fileZip = currentPath + '/bleachbit.zip';
+    homePath = app.getPath('home');
+    const fileZip = homePath + '/bleachbit.zip';
     console.log(fileZip)
-    await sudo.exec('curl https://github.com/bleachbit/bleachbit/archive/refs/heads/master.zip -L -o ' + fileZip + ' && unzip ' + fileZip + ' -d ' + currentPath + ' && rm ' + fileZip, options,
-        function(error, stdout, stderr) {
-          if (error) throw error;
-            console.log('stdout: ' + stdout);
-    });
+    homePath = app.getPath('home');
+    await exec('curl https://github.com/bleachbit/bleachbit/archive/refs/heads/master.zip -L -o ' + fileZip)
+    await exec('unzip ' + fileZip + ' -d ' + homePath)
+    await exec('rm ' + fileZip)
 }
 
 module.exports.initProgress = async () => {
@@ -55,8 +50,8 @@ module.exports.checkProgressClean = () => {
 async function initFiles() {
     lstFileFromBleachbit = []
     lstFileProcessed = []
-    const currentPath = await returnCurrentPath();
-    const cmd = 'python3 ' + currentPath + '/bleachbit-master/bleachbit.py --list --debug';
+    homePath = app.getPath('home');
+    const cmd = 'python3 ' + homePath + '/bleachbit-master/bleachbit.py --list --debug';
     console.log(cmd)
     const {stdout} = await exec(cmd)
     console.log(stdout)
@@ -70,8 +65,9 @@ async function initFiles() {
 }  
 
 async function cleanFiles() {
+    homePath = app.getPath('home');
     lstFileFromBleachbit.forEach(async (element) => {
-        await exec('python3 bleachbit-master/bleachbit.py ' + element + ' --clean')
+        await exec('python3 ' + homePath + '/bleachbit-master/bleachbit.py ' + element + ' --clean')
         lstFileProcessed.push(element)
     }); 
 }  

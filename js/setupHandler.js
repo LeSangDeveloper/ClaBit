@@ -54,21 +54,12 @@ module.exports.setupCommonHandler = () => {
 }
 
 async function isClamavInstalled() {
-    isClamavInstalledVar = linuxScanModule.isInstallClamav(); 
+    isClamavInstalledVar = await linuxScanModule.isInstallClamav(); 
     return isClamavInstalledVar;
 }
 
 async function installClamav() {
-    // linuxScanModule.installClamav()
-    console.log("installclamav")
-    var options = {
-        name: 'ClaBit',
-      };
-      sudo.exec('apt-get install clamav -y', options,
-        function(error, stdout, stderr) {
-          if (error) throw error;
-            console.log('stdout: ' + stdout);
-      });
+    linuxScanModule.installClamav()
 }
 
 async function runClamscan() {
