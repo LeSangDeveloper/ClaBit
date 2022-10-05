@@ -13,16 +13,16 @@ module.exports.isInstallClamav = async () => {
     return stdout.includes('clamscan');
 }
 
-module.exports.installClamav = async () => {
-    var options = {
-        name: 'ClaBit',
-      };
-      sudo.exec('apt-get install clamav -y', options,
-        function(error, stdout, stderr) {
-          if (error) throw error;
+module.exports.installClamav = () => {
+  console.log("installclamav")
+  var options = {
+      name: 'ClaBit',
+    };
+    sudo.exec('apt-get install clamav -y', options,
+      function(error, stdout, stderr) {
+        if (error) throw error;
           console.log('stdout: ' + stdout);
-        }
-      );
+    });
 }
 
 module.exports.doScan = async () => {

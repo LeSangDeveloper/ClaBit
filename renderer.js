@@ -42,7 +42,7 @@ async function handleClickActivate() {
         if (responseClamavIsInstalled === false) {
             const information = document.getElementById('loading')
             information.innerText = `INSTALLING.....`
-            window.versions.installClamav();
+            window.invoker.installClamav();
             while (responseClamavIsInstalled === false) {
                 try {
                     responseClamavIsInstalled = await window.invoker.isInstalledClamav()
@@ -56,7 +56,7 @@ async function handleClickActivate() {
         var responseIsInstalledBleachbit = await window.invoker.isInstalledBleachbit();
 
         if (responseIsInstalledBleachbit === false) {
-            window.versions.installBleachbit();
+            window.invoker.installBleachbit();
             const information2 = document.getElementById('loading')
             information2.innerText = `INSTALLING.....`
             while (responseIsInstalledBleachbit === false) {
@@ -82,7 +82,6 @@ async function handleClickScan() {
         2. check progress
         3. while check progress show progress in progress bar
     */
-   window.versions
 }
 
 async function handleClickClean() {
@@ -91,4 +90,22 @@ async function handleClickClean() {
         2. check progress
         3. while check progress show progress in progress bar
     */
+    $("#cleanProgressBar").css('width', '0%')
+    document.querySelector('#buttonClean').disabled = true
+    await window.invoker.initProgressClean()
+    window.invoker.doClean();
+    var percent = await window.invoker.checkCleanProgress();
+    console.log(percent)
+    while (percent < 0.95) {
+        console.log(percent)
+        $("#cleanProgressBar").css('width', percent * 100 + '%')
+        percent = await window.invoker.checkCleanProgress();
+        await sleep(1000);
+    }
+    $("#cleanProgressBar").css('width', '100%')
+    document.querySelector('#buttonClean').disabled = false
 }
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+ }

@@ -1,5 +1,6 @@
 const {BrowserWindow, ipcMain} = require('electron')
 const linuxCleanModule = require('./clean/linux.js') 
+const sudo = require('sudo-prompt');
 const linuxScanModule = require('./scan/linux.js') 
 
 module.exports = {} = {}
@@ -33,12 +34,16 @@ module.exports.setupCleanHandler = () => {
         installBleachbit();
     })
 
+    ipcMain.handle('init-progress-clean', async () => {
+        await initProgressClean();
+    })
+
     ipcMain.handle('do-clean', async () => {
         runBleachBit();
     })
 
-    ipcMain.handle('check-clean-progress', async => {
-
+    ipcMain.handle('check-clean-progress', () => {
+        return checkCleanProgress();
     })
 }
 
@@ -54,7 +59,16 @@ async function isClamavInstalled() {
 }
 
 async function installClamav() {
-    linuxScanModule.installClamav()
+    // linuxScanModule.installClamav()
+    console.log("installclamav")
+    var options = {
+        name: 'ClaBit',
+      };
+      sudo.exec('apt-get install clamav -y', options,
+        function(error, stdout, stderr) {
+          if (error) throw error;
+            console.log('stdout: ' + stdout);
+      });
 }
 
 async function runClamscan() {
@@ -69,12 +83,18 @@ async function installBleachbit() {
     await linuxCleanModule.installBleachbit()
 }
 
+async function initProgressClean() {
+    // await exec('python3 bleachbit-master/bleachbit.py --list | xargs python3 bleachbit-master/bleachbit.py  --clean')
+    await linuxCleanModule.initProgress()
+}
+
 async function runBleachBit() {
-    await exec('python3 bleachbit-master/bleachbit.py --list | xargs python3 bleachbit-master/bleachbit.py  --clean')
+    // await exec('python3 bleachbit-master/bleachbit.py --list | xargs python3 bleachbit-master/bleachbit.py  --clean')
+    linuxCleanModule.doClean()
 }
 
 async function checkCleanProgress() {
-
+    return await linuxCleanModule.checkProgressClean()
 }
 
 async function isBleachbitInstalled() {

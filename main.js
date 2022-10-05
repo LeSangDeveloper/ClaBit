@@ -1,8 +1,6 @@
 const {app, BrowserWindow} = require('electron')
 const path = require('path')
 const util = require("util");
-const exec = util.promisify(require('child_process').exec);
-const spawn = util.promisify(require('child_process').spawn);
 const { fork } = require('child_process');
 const sudo = require('sudo-prompt');
 const setupHandlerModule = require('./js/setupHandler.js')

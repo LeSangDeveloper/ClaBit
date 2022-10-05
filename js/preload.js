@@ -15,6 +15,7 @@ contextBridge.exposeInMainWorld('invoker', {
     isInstalledBleachbit: () => ipcRenderer.invoke('is-installed-bleachbit'),
     installBleachbit: () => ipcRenderer.invoke('install-bleachbit'),
     checkCleanProgress: () => ipcRenderer.invoke('check-clean-progress'),
+    initProgressClean: () => ipcRenderer.invoke('init-progress-clean'),
     doClean: () => ipcRenderer.invoke('do-clean'),
 
     checkOpenWindowNumber: () => ipcRenderer.invoke('check-open-window-number'),
