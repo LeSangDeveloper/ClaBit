@@ -5,6 +5,28 @@ const exec = util.promisify(require('child_process').exec);
 const spawn = util.promisify(require('child_process').spawn);
 const { fork } = require('child_process');
 const sudo = require('sudo-prompt');
+const linuxCleanModule = require('./js/clean/linux.js') 
+const linuxScanModule = require('./js/scan/linux.js') 
+
+app.whenReady().then(() => {
+    createWindow()
+
+    setupScanHandler();
+    setupCleanHandler();
+    
+    ipcMain.handle('check-open-window-number', async () => {
+        return BrowserWindow.getAllWindows().length;
+    })
+
+    app.on('activate', () => {
+        if (BrowserWindow.getAllWindows().length === 0) 
+            createWindow()
+    })
+})
+
+app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') app.quit()
+})
 
 const createWindow = () => {
     const win = new BrowserWindow({
@@ -17,6 +39,10 @@ const createWindow = () => {
         }
     })
 
+    win.loadFile('index.html')
+}
+
+function setupScanHandler() {
     ipcMain.handle('is-installed-clamav', async () => {
         isClamavInstalledVar = await isClamavInstalled(); 
         return isClamavInstalledVar;
@@ -26,6 +52,16 @@ const createWindow = () => {
         installClamav();
     })
 
+    ipcMain.handle('do-scan', async () => {
+        
+    })
+
+    ipcMain.handle('check-scan-progress', async () => {
+
+    })
+}
+
+function setupCleanHandler() {
     ipcMain.handle('is-installed-bleachbit', async () => {
         isBleachbitInstalledVar = await isBleachbitInstalled(); 
         return isBleachbitInstalledVar;
@@ -35,47 +71,26 @@ const createWindow = () => {
         installBleachbit();
     })
 
-    ipcMain.handle('check-open-window-number', async () => {
-        return BrowserWindow.getAllWindows().length;
+    ipcMain.handle('do-clean', async () => {
+
     })
 
-    win.loadFile('index.html')
+    ipcMain.handle('check-clean-progress', async => {
+
+    })
 }
 
-app.whenReady().then(() => {
-    createWindow()
-
-    app.on('activate', () => {
-        if (BrowserWindow.getAllWindows().length === 0) 
-            createWindow()
-    })
-})
-
-app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') app.quit()
-})
-
 async function isClamavInstalled() {
-    const {stdout, stderr} = await exec('which clamscan')
-    return stdout.includes('clamscan');
+    isClamavInstalledVar = linuxScanModule.isInstallClamav(); 
+    return isClamavInstalledVar;
 }
 
 async function installClamav() {
-    var options = {
-      name: 'ClaBit',
-    };
-    sudo.exec('apt-get install clamav -y', options,
-      function(error, stdout, stderr) {
-        if (error) throw error;
-        console.log('stdout: ' + stdout);
-      }
-    );
+    linuxScanModule.installClamav()
 }
 
 async function installBleachbit() {
-    await exec('curl https://github.com/bleachbit/bleachbit/archive/refs/heads/master.zip -L -o bleachbit.zip')
-    await exec('unzip bleachbit.zip')
-    await exec('rm bleachbit.zip')
+    await linuxCleanModule.installBleachbit()
 }
 
 async function runBleachBit() {
@@ -83,13 +98,6 @@ async function runBleachBit() {
 }
 
 async function isBleachbitInstalled() {
-    const {stdout, stderr} = await exec('ls')
-    return stdout.includes('bleachbit-master')
-    // if (process.platform == "win32") {
-
-    // } else {
-        
-    // }
-    // return true;
+    return await linuxCleanModule.isInstallBleachbit()
 }
 
