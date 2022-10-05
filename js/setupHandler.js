@@ -1,9 +1,10 @@
-const {ipcMain} = require('electron')
+const {BrowserWindow, ipcMain} = require('electron')
 const linuxCleanModule = require('./clean/linux.js') 
 const linuxScanModule = require('./scan/linux.js') 
 
 module.exports = {} = {}
 module.exports.setupScanHandler = () => {
+    console.log(process.platform)
     ipcMain.handle('is-installed-clamav', async () => {
         isClamavInstalledVar = await isClamavInstalled(); 
         return isClamavInstalledVar;

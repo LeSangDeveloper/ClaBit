@@ -1,4 +1,4 @@
-const {app, BrowserWindow, ipcMain} = require('electron')
+const {app, BrowserWindow} = require('electron')
 const path = require('path')
 const util = require("util");
 const exec = util.promisify(require('child_process').exec);
