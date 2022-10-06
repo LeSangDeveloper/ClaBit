@@ -15,12 +15,16 @@ module.exports.setupScanHandler = () => {
         installClamav();
     })
 
+    ipcMain.handle('init-progress-scan', async () => {
+        await initProgressScan();
+    })
+
     ipcMain.handle('do-scan', async () => {
         runClamscan();
     })
 
     ipcMain.handle('check-scan-progress', async () => {
-
+        checkClamScanProgress()
     })
 }
 
@@ -63,11 +67,15 @@ async function installClamav() {
 }
 
 async function runClamscan() {
+    linuxScanModule.doScan()
+}
 
+async function initProgressScan() {
+    await linuxScanModule.initProgressScan()
 }
 
 async function checkClamScanProgress() {
-
+    return await linuxScanModule.checkProgressScan()
 }
 
 async function installBleachbit() {

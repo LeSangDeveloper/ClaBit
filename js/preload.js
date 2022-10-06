@@ -9,6 +9,7 @@ contextBridge.exposeInMainWorld('versions', {
 contextBridge.exposeInMainWorld('invoker', {
     isInstalledClamav: () => ipcRenderer.invoke('is-installed-clamav'),
     installClamav: () => ipcRenderer.invoke('install-clamav'),
+    initProgressScan: () => ipcRenderer.invoke('init-progress-scan'),
     checkScanProgress: () => ipcRenderer.invoke('check-scan-progress'),
     doScan: () => ipcRenderer.invoke('do-scan'),
 

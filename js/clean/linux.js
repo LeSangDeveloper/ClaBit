@@ -52,16 +52,13 @@ async function initFiles() {
     lstFileProcessed = []
     homePath = app.getPath('home');
     const cmd = 'python3 ' + homePath + '/bleachbit-master/bleachbit.py --list --debug';
-    console.log(cmd)
     const {stdout} = await exec(cmd)
-    console.log(stdout)
     filesArray = stdout.split(/[\n\r]/g)
     filesArray.forEach(element => {
         if (element.split('.').length === 2) {
             lstFileFromBleachbit.push(element)
         }
     }); 
-    console.log(lstFileFromBleachbit[0])
 }  
 
 async function cleanFiles() {

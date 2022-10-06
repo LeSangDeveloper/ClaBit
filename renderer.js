@@ -16,8 +16,6 @@ document.querySelector("#linkOpenWindow").addEventListener('click', () => {
     openChildWindow();
 })
 
-
-
 async function openChildWindow() {
     numberOfWindows = await window.invoker.checkOpenWindowNumber();
     console.log(numberOfWindows);
@@ -66,16 +64,23 @@ async function handleClickActivate() {
 
 
 async function handleClickScan() {
-    /* 
-        1. call do-scan
-        2. check progress
-        3. while check progress show progress in progress bar
-    */
+    document.querySelector('#buttonScan').disabled = true
+    $('#scanProgressBar').css('width', '0%')
+    await window.invoker.initProgressScan()
+    window.invoker.doScan();
+    var percent = await window.invoker.checkScanProgress();
+    while (percent < 0.95) {
+        $("#scanProgressBar").css('width', percent * 100 + '%')
+        percent = await window.invoker.checkScanProgress();
+        await sleep(1000);
+    }
+    $("#scanProgressBar").css('width', '100%')
+    document.querySelector('#buttonScan').disabled = false
 }
 
 async function handleClickClean() {
-    $("#cleanProgressBar").css('width', '0%')
     document.querySelector('#buttonClean').disabled = true
+    $("#cleanProgressBar").css('width', '0%')
     await window.invoker.initProgressClean()
     window.invoker.doClean();
     var percent = await window.invoker.checkCleanProgress();
