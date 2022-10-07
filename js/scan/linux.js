@@ -30,7 +30,6 @@ module.exports.installClamav = async () => {
 module.exports.initProgressScan = async () => {
   homePath = app.getPath('home');
   const {stdout, stderr} = await exec('ls -a ' + homePath)
-  console.log(stdout)
   filesArray = stdout.split(/[\n\r]/g)
   lstFileFromLSCmd = []
   lstScannedFile = []
@@ -47,12 +46,16 @@ module.exports.doScan = async () => {
   console.log('scan')
   homePath = app.getPath('home');
   lstFileFromLSCmd.forEach(async (element) => {
+    try {
       await exec(homePath + '/clamav/bin/clamscan ' + homePath + '/' + element)
-      // check infected file
+      // TODO check infected file
       if (false) {
         infectedFiles.push(element)
       }
       lstScannedFile.push(element)
+    } catch {
+      console.log("Cannot clean: " + homePath + '/' + element)
+    }
   }); 
 }
 
