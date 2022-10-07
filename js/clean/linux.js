@@ -68,8 +68,3 @@ async function cleanFiles() {
         lstFileProcessed.push(element)
     }); 
 }  
-
-async function returnCurrentPath() {
-    const {stdout, stderr} = await exec('pwd')
-    return stdout.replace(/[\n\r]/g, '')
-}

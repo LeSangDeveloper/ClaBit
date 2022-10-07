@@ -47,3 +47,7 @@
     z-index: -1;
     border: 2px solid #000000;
 }
+
+#lastCleanDate {
+	display: none;
+}

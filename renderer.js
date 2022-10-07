@@ -74,7 +74,7 @@ async function handleClickScan() {
         percent = await window.invoker.checkScanProgress();
         await sleep(1000);
     }
-    $("#scanProgressBar").css('width', '100%')
+    $("#scanProgressBar").css('width', '100%') 
     document.querySelector('#buttonScan').disabled = false
 }
 
@@ -89,6 +89,9 @@ async function handleClickClean() {
         percent = await window.invoker.checkCleanProgress();
         await sleep(1000);
     }
+    console.log(getCurrentDate())
+    document.getElementById('lastCleanDate').innerText = `Last clean date: ${getCurrentDate()}`
+    $('#lastCleanDate').css('display', 'block')
     $("#cleanProgressBar").css('width', '100%')
     document.querySelector('#buttonClean').disabled = false
 }
@@ -96,3 +99,11 @@ async function handleClickClean() {
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
  }
+
+function getCurrentDate() {
+    let date = new Date();
+    const day = date.toLocaleString('default', { day: '2-digit' });
+    const month = date.toLocaleString('default', { month: 'short' });
+    const year = date.toLocaleString('default', { year: 'numeric' });
+    return day + ' ' + month + ' ' + year;
+}
