@@ -58,44 +58,101 @@ module.exports.setupCommonHandler = () => {
 }
 
 async function isClamavInstalled() {
-    isClamavInstalledVar = await linuxScanModule.isInstallClamav(); 
-    return isClamavInstalledVar;
+    if (process.platform == "linux") {
+        await linuxScanModule.isInstallClamav()
+    } else if (process.platform == "darwin") {
+
+    } else {
+
+    }
 }
 
 async function installClamav() {
-    linuxScanModule.installClamav()
+    if (process.platform == "linux") {
+        linuxScanModule.installClamav()
+    } else if (process.platform == "darwin") {
+
+    } else {
+
+    }
 }
 
 async function runClamscan() {
-    linuxScanModule.doScan()
+    if (process.platform == "linux") {
+        linuxScanModule.doScan()
+    } else if (process.platform == "darwin") {
+
+    } else {
+
+    }
 }
 
 async function initProgressScan() {
-    await linuxScanModule.initProgressScan()
+    if (process.platform == "linux") {
+        await linuxScanModule.initProgressScan()
+    } else if (process.platform == "darwin") {
+
+    } else {
+
+    }
 }
 
 async function checkClamScanProgress() {
-    return await linuxScanModule.checkProgressScan()
+    if (process.platform == "linux") {
+        await linuxScanModule.checkProgressScan()
+    } else if (process.platform == "darwin") {
+
+    } else {
+
+    }
 }
 
 async function installBleachbit() {
-    await linuxCleanModule.installBleachbit()
+    if (process.platform == "linux") {
+        await linuxCleanModule.installBleachbit()
+    } else if (process.platform == "darwin") {
+
+    } else {
+
+    }
 }
 
 async function initProgressClean() {
-    // await exec('python3 bleachbit-master/bleachbit.py --list | xargs python3 bleachbit-master/bleachbit.py  --clean')
-    await linuxCleanModule.initProgress()
+    if (process.platform == "linux") {
+        await linuxCleanModule.initProgress()
+    } else if (process.platform == "darwin") {
+
+    } else {
+
+    }
 }
 
 async function runBleachBit() {
-    // await exec('python3 bleachbit-master/bleachbit.py --list | xargs python3 bleachbit-master/bleachbit.py  --clean')
-    linuxCleanModule.doClean()
+    if (process.platform == "linux") {
+        linuxCleanModule.doClean()
+    } else if (process.platform == "darwin") {
+
+    } else {
+
+    }
 }
 
 async function checkCleanProgress() {
-    return await linuxCleanModule.checkProgressClean()
+    if (process.platform == "linux") {
+        await linuxCleanModule.checkProgressClean()
+    } else if (process.platform == "darwin") {
+
+    } else {
+
+    }
 }
 
 async function isBleachbitInstalled() {
-    return await linuxCleanModule.isInstallBleachbit()
+    if (process.platform == "linux") {
+        await linuxCleanModule.isInstallBleachbit()
+    } else if (process.platform == "darwin") {
+
+    } else {
+        
+    }
 }
