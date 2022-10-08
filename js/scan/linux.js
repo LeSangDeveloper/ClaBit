@@ -8,6 +8,8 @@ lstFileFromLSCmd = []
 infectedFiles = []
 lstScannedFile = []
 
+isInScanned = false
+
 module.exports = {}
 
 module.exports.sayHelloScan = () => {
@@ -39,24 +41,49 @@ module.exports.initProgressScan = async () => {
         lstFileFromLSCmd.push(element)
       }
   }); 
-  console.log(lstFileFromLSCmd[0])
 }
 
 module.exports.doScan = async () => {
-  console.log('scan')
   homePath = app.getPath('home');
-  lstFileFromLSCmd.forEach(async (element) => {
+  // lstFileFromLSCmd.forEach(async (element) => {
+  //   try {
+  //     console.log(element)
+  //     // const {stdout} = await exec(homePath + '/clamav/bin/clamscan ' + homePath + '/' + element)
+  //     const {stdout} = await exec(homePath + '/clamav/bin/clamscan ' + homePath + '/clamav')
+  //     console.log(stdout)
+  //     // TODO check infected file
+  //     if (false) {
+  //       infectedFiles(element)
+  //     }
+  //     lstScannedFile.push(element)
+  //   } catch {
+  //     console.log("Cannot clean: " + homePath + '/' + element)
+  //   }
+  // });
+  for (var i = 0; i < lstFileFromLSCmd.length; ++i) {
+    var element = lstFileFromLSCmd[i]
     try {
-      await exec(homePath + '/clamav/bin/clamscan ' + homePath + '/' + element)
+      console.log(element)
+      const {stdout} = await exec(homePath + '/clamav/bin/clamscan ' + homePath + '/' + element)
+      // const {stdout} = await exec(homePath + '/clamav/bin/clamscan ' + homePath + '/clamav')
+      console.log(stdout)
       // TODO check infected file
       if (false) {
-        infectedFiles.push(element)
+        infectedFiles(element)
       }
       lstScannedFile.push(element)
     } catch {
       console.log("Cannot clean: " + homePath + '/' + element)
     }
-  }); 
+  }
+  // const {stdout} = await exec(homePath + '/clamav/bin/clamscan ' + homePath + '/' + element)
+  // const {stdout} = await exec(homePath + '/clamav/bin/clamscan ' + homePath + '/clamav')
+  // console.log(stdout)
+  // // TODO check infected file
+  // if (false) {
+  //   infectedFiles(element)
+  // }
+  // console.log("DONE!!!");
 }
 
 module.exports.checkProgressScan = async () => {

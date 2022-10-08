@@ -48,7 +48,7 @@ async function handleClickActivate() {
         } catch {
             responseIsInstalledBleachbit = false
         }
-        console.log(responseIsInstalledBleachbit)
+
         if (responseIsInstalledBleachbit === false) {
             const information2 = document.getElementById('loading')
             information2.innerText = `INSTALLING.....`
@@ -69,6 +69,9 @@ async function handleClickScan() {
     await window.invoker.initProgressScan()
     window.invoker.doScan();
     var percent = await window.invoker.checkScanProgress();
+    console.log(percent)
+    console.log(percent < 0.95)
+    console.log(0 < 0.95)
     while (percent < 0.95) {
         $("#scanProgressBar").css('width', percent * 100 + '%')
         percent = await window.invoker.checkScanProgress();

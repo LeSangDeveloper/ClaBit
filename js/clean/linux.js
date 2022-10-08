@@ -63,12 +63,12 @@ async function initFiles() {
 
 async function cleanFiles() {
     homePath = app.getPath('home');
-    lstFileFromBleachbit.forEach(async (element) => {
+    for (var i = 0; i < lstFileFromBleachbit; i++) {
         try {
             await exec('python3 ' + homePath + '/bleachbit-master/bleachbit.py ' + element + ' --clean')
             lstFileProcessed.push(element)
         } catch {
 
         }
-    }); 
+    }
 }  

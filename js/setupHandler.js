@@ -24,7 +24,7 @@ module.exports.setupScanHandler = () => {
     })
 
     ipcMain.handle('check-scan-progress', async () => {
-        checkClamScanProgress()
+        return checkClamScanProgress()
     })
 }
 
