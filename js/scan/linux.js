@@ -16,9 +16,9 @@ module.exports.sayHelloScan = () => {
     console.log("Hello")
 }
 
-module.exports.isInstallClamav = async () => {
+module.exports.isInstallClamav = () => {
     homePath = app.getPath('home');
-    const {stdout, stderr} = await exec('ls ' + homePath + '/clamav/bin/')
+    const {stdout, stderr} = exec('ls ' + homePath + '/clamav/bin/')
     return !stdout.includes('No such file');
 }
 
@@ -29,9 +29,9 @@ module.exports.installClamav = async () => {
   await exec('rm ' + homePath + '/clamav.zip -d ')
 }
 
-module.exports.initProgressScan = async () => {
+module.exports.initProgressScan = () => {
   homePath = app.getPath('home');
-  const {stdout, stderr} = await exec('ls -a ' + homePath)
+  const {stdout, stderr} = exec('ls -a ' + homePath)
   filesArray = stdout.split(/[\n\r]/g)
   lstFileFromLSCmd = []
   lstScannedFile = []
@@ -45,21 +45,6 @@ module.exports.initProgressScan = async () => {
 
 module.exports.doScan = async () => {
   homePath = app.getPath('home');
-  // lstFileFromLSCmd.forEach(async (element) => {
-  //   try {
-  //     console.log(element)
-  //     // const {stdout} = await exec(homePath + '/clamav/bin/clamscan ' + homePath + '/' + element)
-  //     const {stdout} = await exec(homePath + '/clamav/bin/clamscan ' + homePath + '/clamav')
-  //     console.log(stdout)
-  //     // TODO check infected file
-  //     if (false) {
-  //       infectedFiles(element)
-  //     }
-  //     lstScannedFile.push(element)
-  //   } catch {
-  //     console.log("Cannot clean: " + homePath + '/' + element)
-  //   }
-  // });
   for (var i = 0; i < lstFileFromLSCmd.length; ++i) {
     var element = lstFileFromLSCmd[i]
     try {
@@ -67,26 +52,47 @@ module.exports.doScan = async () => {
       const {stdout} = await exec(homePath + '/clamav/bin/clamscan ' + homePath + '/' + element)
       // const {stdout} = await exec(homePath + '/clamav/bin/clamscan ' + homePath + '/clamav')
       console.log(stdout)
-      // TODO check infected file
-      if (false) {
-        infectedFiles(element)
+      if (stdout.includes('FOUND')) {
+        /* 
+        1. Convert path of file to the folder_name by change "/" to "_" and create it in ""
+        2. Move infected file from its location to new folder
+        3. push element's name to list
+        */
+        infectedFiles.push(element)
       }
       lstScannedFile.push(element)
     } catch {
       console.log("Cannot clean: " + homePath + '/' + element)
     }
   }
-  // const {stdout} = await exec(homePath + '/clamav/bin/clamscan ' + homePath + '/' + element)
-  // const {stdout} = await exec(homePath + '/clamav/bin/clamscan ' + homePath + '/clamav')
-  // console.log(stdout)
-  // // TODO check infected file
-  // if (false) {
-  //   infectedFiles(element)
-  // }
-  // console.log("DONE!!!");
 }
 
-module.exports.checkProgressScan = async () => {
+module.exports.checkProgressScan = () => {
   ratio = lstScannedFile.length / lstFileFromLSCmd.length 
   return ratio
+}
+
+module.exports.getQtyOfQuarantineFile = () => {
+  // TODO implement this function
+  return 0
+}
+
+module.exports.getQtyOfInfectedFile = () => {
+  // TODO implement this function
+  return 0
+}
+
+module.exports.getAllQuarantineFiles = () => {
+  // TODO implement this function
+  return 0
+}
+
+module.exports.burnFile = (file) => {
+  // TODO implement this function
+  return true
+}
+
+module.exports.allowFile = (file) => {
+  // TODO implement this function
+  return true
 }

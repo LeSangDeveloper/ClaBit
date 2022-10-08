@@ -6,8 +6,8 @@ const linuxScanModule = require('./scan/linux.js')
 module.exports = {} = {}
 module.exports.setupScanHandler = () => {
     console.log(process.platform)
-    ipcMain.handle('is-installed-clamav', async () => {
-        isClamavInstalledVar = await isClamavInstalled(); 
+    ipcMain.handle('is-installed-clamav', () => {
+        isClamavInstalledVar = isClamavInstalled(); 
         return isClamavInstalledVar;
     })
 
@@ -15,16 +15,36 @@ module.exports.setupScanHandler = () => {
         installClamav();
     })
 
-    ipcMain.handle('init-progress-scan', async () => {
-        await initProgressScan();
+    ipcMain.handle('init-progress-scan', () => {
+        initProgressScan();
     })
 
     ipcMain.handle('do-scan', async () => {
         runClamscan();
     })
 
-    ipcMain.handle('check-scan-progress', async () => {
+    ipcMain.handle('check-scan-progress', () => {
         return checkClamScanProgress()
+    })
+
+    ipcMain.handle('get-qty-quarantine-file', () => {
+        return getQtyOfQuarantineFile()
+    })
+
+    ipcMain.handle('get-qty-infected-file', () => {
+        return getQtyOfInfectedFile()
+    })
+
+    ipcMain.handle('get-all-quarantine-files', () => {
+        return getAllQuarantineFiles()
+    })
+
+    ipcMain.handle('burn-file', (file) => {
+        return burnFile()
+    })
+
+    ipcMain.handle('allow-file', (file) => {
+        return allowFile()
     })
 }
 
@@ -57,9 +77,9 @@ module.exports.setupCommonHandler = () => {
     })
 }
 
-async function isClamavInstalled() {
+function isClamavInstalled() {
     if (process.platform == "linux") {
-        await linuxScanModule.isInstallClamav()
+        linuxScanModule.isInstallClamav()
     } else if (process.platform == "darwin") {
 
     } else {
@@ -87,9 +107,9 @@ async function runClamscan() {
     }
 }
 
-async function initProgressScan() {
+function initProgressScan() {
     if (process.platform == "linux") {
-        await linuxScanModule.initProgressScan()
+        linuxScanModule.initProgressScan()
     } else if (process.platform == "darwin") {
 
     } else {
@@ -97,9 +117,59 @@ async function initProgressScan() {
     }
 }
 
-async function checkClamScanProgress() {
+function checkClamScanProgress() {
     if (process.platform == "linux") {
-        await linuxScanModule.checkProgressScan()
+        linuxScanModule.checkProgressScan()
+    } else if (process.platform == "darwin") {
+
+    } else {
+
+    }
+}
+
+function getQtyOfQuarantineFile() {
+    if (process.platform == "linux") {
+        return linuxScanModule.getQtyOfQuarantineFile()
+    } else if (process.platform == "darwin") {
+
+    } else {
+
+    }
+}
+
+function getQtyOfInfectedFile() {
+    if (process.platform == "linux") {
+        return linuxScanModule.getQtyOfInfectedFile()
+    } else if (process.platform == "darwin") {
+
+    } else {
+
+    }
+}
+
+function getAllQuarantineFiles() {
+    if (process.platform == "linux") {
+        return linuxScanModule.getAllQuarantineFiles()
+    } else if (process.platform == "darwin") {
+
+    } else {
+
+    }
+}
+
+function burnFile(file) {
+    if (process.platform == "linux") {
+        return linuxScanModule.burnFile(file)
+    } else if (process.platform == "darwin") {
+
+    } else {
+
+    }
+}
+
+function allowFile(file) {
+    if (process.platform == "linux") {
+        return linuxScanModule.allowFile(file)
     } else if (process.platform == "darwin") {
 
     } else {
