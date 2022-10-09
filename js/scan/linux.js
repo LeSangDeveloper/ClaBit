@@ -98,16 +98,31 @@ module.exports.getAllQuarantineFiles = () => {
   return result
 }
 
-module.exports.burnFile = (file) => {
-  // TODO implement this function
+module.exports.burnFile = async (file) => {
+  await exec('rm ' + file)
   console.log(file)
+  removeLineFromLog(file)
   return true
 }
 
-module.exports.allowFile = (file, oldFullPath) => {
-  // TODO implement this function
+module.exports.allowFile = async (file, oldFullPath) => {
+  await exec('mv ' + file + ' ' + oldFullPath)
+  removeLineFromLog(file)
   console.log(file + " " + oldFullPath)
   return true
+}
+
+async function removeLineFromLog(file) {
+  var data = fs.readFileSync(app.getPath('home') + '/clamav/quarantine_file.log', 'utf8')
+  var dataSplit = data.split(/[\n\r]/g)
+  var idx = -1
+  for (i = 0; i < dataSplit.length; ++i) {
+    if (dataSplit[i].includes(file)) idx = i
+  }
+  dataSplit.splice(idx, 1)
+  await fs.writeFile(homePath + '/clamav/quarantine_file.log', dataSplit.join('\n'), function (err) {
+    if (err) throw err;
+  })
 }
 
 async function handleResultScanFromStdout(stdout, fileName) {

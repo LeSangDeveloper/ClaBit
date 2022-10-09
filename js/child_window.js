@@ -25,8 +25,10 @@ async function setUpChildWindow() {
 
 async function removeFile(fileFullPath) {
     await window.invoker.burnFile(fileFullPath)
+    setUpChildWindow()
 }
 
 async function allowFile(fileFullPath, oldFullPath) {
     await window.invoker.allowFile(fileFullPath, oldFullPath)
+    setUpChildWindow()
 }
