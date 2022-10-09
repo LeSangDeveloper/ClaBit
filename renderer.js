@@ -20,7 +20,7 @@ async function openChildWindow() {
     numberOfWindows = await window.invoker.checkOpenWindowNumber();
     console.log(numberOfWindows);
     if (numberOfWindows == 1) {
-        window.open("./html/child_window.html", "_blank", "width=1200,height=800");
+        window.invoker.openChildWindow()
     }
 }
 
@@ -113,6 +113,7 @@ function getCurrentDate() {
     let date = new Date();
     const day = date.toLocaleString('default', { day: '2-digit' })
     const month = date.toLocaleString('default', { month: 'short' })
+    // const month = date.toLocaleString('default', { month: '2-digit' })
     const year = date.toLocaleString('default', { year: 'numeric' })
     return day + ' ' + month + ' ' + year;
 }

@@ -2,6 +2,7 @@ const {BrowserWindow, ipcMain} = require('electron')
 const linuxCleanModule = require('./clean/linux.js') 
 const sudo = require('sudo-prompt');
 const linuxScanModule = require('./scan/linux.js') 
+const path = require('path')
 
 module.exports = {} = {}
 module.exports.setupScanHandler = () => {
@@ -39,12 +40,14 @@ module.exports.setupScanHandler = () => {
         return getAllQuarantineFiles()
     })
 
-    ipcMain.handle('burn-file', (file) => {
-        return burnFile()
+    ipcMain.handle('burn-file', (event, ...args) => {
+        console.log(args)
+        return burnFile(args[0])
     })
 
-    ipcMain.handle('allow-file', (file) => {
-        return allowFile()
+    ipcMain.handle('allow-file', (event, ...args) => {
+        console.log(args)
+        return allowFile(args[0], args[1])
     })
 }
 
@@ -74,6 +77,20 @@ module.exports.setupCleanHandler = () => {
 module.exports.setupCommonHandler = () => {
     ipcMain.handle('check-open-window-number', async () => {
         return BrowserWindow.getAllWindows().length;
+    })
+
+    ipcMain.handle('open-child-window', async () => {
+        const win = new BrowserWindow({
+            width: 1230,
+            height: 600,
+            minWidth: 1024,
+            minHeight: 565,
+            webPreferences: {
+                preload: path.join(__dirname, './preload.js')
+            }
+        })
+    
+        win.loadFile('./html/child_window.html')
     })
 }
 
@@ -168,9 +185,9 @@ function burnFile(file) {
     }
 }
 
-function allowFile(file) {
+function allowFile(file, oldFullPath) {
     if (process.platform == "linux") {
-        return linuxScanModule.allowFile(file)
+        return linuxScanModule.allowFile(file, oldFullPath)
     } else if (process.platform == "darwin") {
 
     } else {

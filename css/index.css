@@ -55,3 +55,7 @@
 #linkOpenWindow {
 	display: none;
 }
+
+#resultScan {
+	cursor: pointer;
+}

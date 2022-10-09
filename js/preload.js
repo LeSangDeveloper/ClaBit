@@ -14,8 +14,8 @@ contextBridge.exposeInMainWorld('invoker', {
     getQtyOfQuanrantineFile: () => ipcRenderer.invoke('get-qty-quarantine-file'),
     getQtyOfInfectedFile: () => ipcRenderer.invoke('get-qty-infected-file'),
     getAllQuarantineFiles: () => ipcRenderer.invoke('get-all-quarantine-files'),
-    burnFile: (file) => ipcRenderer.invoke('burn-file'),
-    allowFile: (file) => ipcRenderer.invoke('allow-file'),
+    burnFile: (file) => ipcRenderer.invoke('burn-file', file),
+    allowFile: (file, oldFullPath) => ipcRenderer.invoke('allow-file', file, oldFullPath),
     doScan: () => ipcRenderer.invoke('do-scan'),
 
     isInstalledBleachbit: () => ipcRenderer.invoke('is-installed-bleachbit'),
@@ -25,4 +25,5 @@ contextBridge.exposeInMainWorld('invoker', {
     doClean: () => ipcRenderer.invoke('do-clean'),
 
     checkOpenWindowNumber: () => ipcRenderer.invoke('check-open-window-number'),
+    openChildWindow: () => ipcRenderer.invoke('open-child-window'),
 })

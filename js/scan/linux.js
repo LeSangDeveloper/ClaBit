@@ -3,6 +3,7 @@ const util = require("util");
 const exec = util.promisify(require('child_process').exec);
 const sudo = require('sudo-prompt');
 const { stdout } = require('process');
+const fs = require('fs')
 
 lstFileFromLSCmd = []
 infectedFiles = []
@@ -72,9 +73,15 @@ module.exports.checkProgressScan = () => {
 }
 
 module.exports.getQtyOfQuarantineFile = async () => {
-  const {stdout, stderr} = await exec('ls -lat ' + homePath + "/clamav/.quarantine")
-  result = stdout.split(/[\n\r]/g)
-  return result.length - 4
+  isExits  = await checkFileExists(app.getPath('home') + '/clamav/quarantine_file.log')
+  if (!isExits) return 0
+  var data = fs.readFileSync(app.getPath('home') + '/clamav/quarantine_file.log', 'utf8')
+  var dataSplit = data.split(/[\n\r]/g)
+  var count = 0
+  for (i = 0; i < dataSplit.length; ++i) {
+    if (dataSplit[i].length > 1) count++
+  }
+  return count
 }
 
 module.exports.getQtyOfInfectedFile = () => {
@@ -82,17 +89,24 @@ module.exports.getQtyOfInfectedFile = () => {
 }
 
 module.exports.getAllQuarantineFiles = () => {
-  // TODO implement this function
-  return 0
+  var data = fs.readFileSync(app.getPath('home') + '/clamav/quarantine_file.log', 'utf8')
+  var dataSplit = data.split(/[\n\r]/g)
+  var result = []
+  for (i = 0; i < dataSplit.length; ++i) {
+    if (dataSplit[i].length > 1) result.push(dataSplit[i])
+  }
+  return result
 }
 
 module.exports.burnFile = (file) => {
   // TODO implement this function
+  console.log(file)
   return true
 }
 
-module.exports.allowFile = (file) => {
+module.exports.allowFile = (file, oldFullPath) => {
   // TODO implement this function
+  console.log(file + " " + oldFullPath)
   return true
 }
 
@@ -100,24 +114,44 @@ async function handleResultScanFromStdout(stdout, fileName) {
   if (stdout.includes('FOUND')) {
     logArray = stdout.split(/[\n\r]/g)
     resultArray = getResultFromLog(logArray)
-    fullPath = resultArray[0].replaceAll("/", "_").replaceAll(":", "").replaceAll(fileName, "")
+    fullPath = resultArray[0].replaceAll("/", "_").replaceAll(":", "")
+    date = getCurrentDate()
     try {
-      const fullCmd = 'mkdir ' + homePath + '/clamav/.quarantine/' + fullPath 
+      const fullCmd = 'mkdir ' + homePath + '/clamav/.quarantine/' + date
       await exec(fullCmd)
     } catch (e) {
       console.log(e.stdout)
     }
     try {
-      const fullCmd = 'mkdir ' + homePath + '/clamav/.quarantine/' + fullPath + '/' + resultArray[1] 
+      const fullCmd = 'mkdir ' + homePath + '/clamav/.quarantine/' + date + '/' + fullPath 
       await exec(fullCmd)
     } catch (e) {
       console.log(e.stdout)
     }
     try {
-      const fullCmd = 'mv ' + homePath + '/' + 'test/' + fileName + ' ' + homePath + '/clamav/.quarantine/' + fullPath + '/' + resultArray[1] 
+      const fullCmd = 'mkdir ' + homePath + '/clamav/.quarantine/' + date + '/' + fullPath + '/' + resultArray[1] 
       await exec(fullCmd)
     } catch (e) {
       console.log(e.stdout)
+    }
+    try {
+      const fullCmd = 'mv ' + homePath + '/' + 'test/' + fileName + ' ' + homePath + '/clamav/.quarantine/' + date + "/" + fullPath + '/' + resultArray[1] 
+      await exec(fullCmd)
+    } catch (e) {
+      console.log(e.stdout)
+    }
+
+    quarantineFileFullPath = homePath + '/clamav/.quarantine/' + date + "/" + fullPath + '/' + resultArray[1] + "/" + fileName
+    isExits  = await checkFileExists(homePath + '/clamav/quarantine_file.log')
+    
+    if (!isExits) {
+      await fs.writeFile(homePath + '/clamav/quarantine_file.log', quarantineFileFullPath + ' ' + resultArray[0].replaceAll(':', '') + ' ' + date.replaceAll('_', '/') + '\n', function (err) {
+        if (err) throw err;
+      })
+    } else {
+      await fs.appendFile(homePath + '/clamav/quarantine_file.log', quarantineFileFullPath + ' ' + resultArray[0].replaceAll(':', '') + ' ' + date.replaceAll('_', '/') + '\n', function (err) {
+        if (err) throw err;
+      })
     }
     infectedFiles.push(fileName)
   }
@@ -130,4 +164,18 @@ function getResultFromLog(logArray) {
       result = element.split(" ") 
       return result
   }
+}
+
+function getCurrentDate() {
+  let date = new Date();
+  const day = date.toLocaleString('default', { day: '2-digit' })
+  const month = date.toLocaleString('default', { month: '2-digit' })
+  const year = date.toLocaleString('default', { year: 'numeric' })
+  return day + '_' + month + '_' + year;
+}
+
+function checkFileExists(file) {
+  return fs.promises.access(file, fs.constants.F_OK)
+           .then(() => true)
+           .catch(() => false)
 }
