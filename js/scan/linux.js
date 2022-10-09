@@ -71,14 +71,14 @@ module.exports.checkProgressScan = () => {
   return ratio
 }
 
-module.exports.getQtyOfQuarantineFile = () => {
-  // TODO implement this function
-  return 0
+module.exports.getQtyOfQuarantineFile = async () => {
+  const {stdout, stderr} = await exec('ls -lat ' + homePath + "/clamav/.quarantine")
+  result = stdout.split(/[\n\r]/g)
+  return result.length - 4
 }
 
 module.exports.getQtyOfInfectedFile = () => {
-  // TODO implement this function
-  return 0
+  return infectedFiles.length
 }
 
 module.exports.getAllQuarantineFiles = () => {

@@ -63,26 +63,25 @@ async function handleClickActivate() {
 
 
 async function handleClickScan() {
+    $('#linkOpenWindow').css('display', 'none')
     document.querySelector('#buttonScan').disabled = true
     $('#scanProgressBar').css('width', '0%')
+    qtyOfOldQuarantineFile = await window.invoker.getQtyOfQuanrantineFile() 
     await window.invoker.initProgressScan()
     window.invoker.doScan();
     var percent = await window.invoker.checkScanProgress()
     console.log(percent)
     console.log(percent < 0.95)
     console.log(0 < 0.95)
-    // TODO get number of infected file
     while (percent < 0.95) {
         $("#scanProgressBar").css('width', percent * 100 + '%')
         percent = await window.invoker.checkScanProgress()
         await sleep(1000);
     }
-    /* TODO render UI for user click to interact to infected file 
-    1. get number of new infected file (1)
-    2. get number of old infected file (2)
-    3. validate number in step 1 and step 2
-    4. show number in step 1 and step 2
-    */
+    qtyOfInfectedFiles = await window.invoker.getQtyOfInfectedFile()
+    qtyOfQuarantineFile = await window.invoker.getQtyOfQuanrantineFile() 
+    //TODO validate infected and quarantine
+    document.getElementById('linkOpenWindow').innerText = `Quarantine file New (${qtyOfInfectedFiles}) Total (${qtyOfQuarantineFile})`
     $('#linkOpenWindow').css('display', 'block')
     $("#scanProgressBar").css('width', '100%') 
     document.querySelector('#buttonScan').disabled = false

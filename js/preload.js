@@ -11,7 +11,7 @@ contextBridge.exposeInMainWorld('invoker', {
     installClamav: () => ipcRenderer.invoke('install-clamav'),
     initProgressScan: () => ipcRenderer.invoke('init-progress-scan'),
     checkScanProgress: () => ipcRenderer.invoke('check-scan-progress'),
-    getQtyOfQuanrantineFile: () => ipcRenderer.invokde('get-qty-quarantine-file'),
+    getQtyOfQuanrantineFile: () => ipcRenderer.invoke('get-qty-quarantine-file'),
     getQtyOfInfectedFile: () => ipcRenderer.invoke('get-qty-infected-file'),
     getAllQuarantineFiles: () => ipcRenderer.invoke('get-all-quarantine-files'),
     burnFile: (file) => ipcRenderer.invoke('burn-file'),
