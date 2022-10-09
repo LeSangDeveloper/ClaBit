@@ -6,8 +6,8 @@ const linuxScanModule = require('./scan/linux.js')
 module.exports = {} = {}
 module.exports.setupScanHandler = () => {
     console.log(process.platform)
-    ipcMain.handle('is-installed-clamav', () => {
-        isClamavInstalledVar = isClamavInstalled(); 
+    ipcMain.handle('is-installed-clamav', async () => {
+        isClamavInstalledVar = await isClamavInstalled(); 
         return isClamavInstalledVar;
     })
 
@@ -15,16 +15,16 @@ module.exports.setupScanHandler = () => {
         installClamav();
     })
 
-    ipcMain.handle('init-progress-scan', () => {
-        initProgressScan();
+    ipcMain.handle('init-progress-scan', async () => {
+        await initProgressScan();
     })
 
     ipcMain.handle('do-scan', async () => {
         runClamscan();
     })
 
-    ipcMain.handle('check-scan-progress', () => {
-        return checkClamScanProgress()
+    ipcMain.handle('check-scan-progress', async () => {
+        return await checkClamScanProgress()
     })
 
     ipcMain.handle('get-qty-quarantine-file', () => {
@@ -77,9 +77,9 @@ module.exports.setupCommonHandler = () => {
     })
 }
 
-function isClamavInstalled() {
+async function isClamavInstalled() {
     if (process.platform == "linux") {
-        linuxScanModule.isInstallClamav()
+        await linuxScanModule.isInstallClamav()
     } else if (process.platform == "darwin") {
 
     } else {
@@ -107,9 +107,9 @@ async function runClamscan() {
     }
 }
 
-function initProgressScan() {
+async function initProgressScan() {
     if (process.platform == "linux") {
-        linuxScanModule.initProgressScan()
+        await linuxScanModule.initProgressScan()
     } else if (process.platform == "darwin") {
 
     } else {
@@ -117,9 +117,10 @@ function initProgressScan() {
     }
 }
 
-function checkClamScanProgress() {
+async function checkClamScanProgress() {
     if (process.platform == "linux") {
-        linuxScanModule.checkProgressScan()
+        result = await linuxScanModule.checkProgressScan()
+        return result
     } else if (process.platform == "darwin") {
 
     } else {
