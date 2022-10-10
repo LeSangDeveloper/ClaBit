@@ -1,5 +1,6 @@
 const {BrowserWindow, ipcMain} = require('electron')
 const linuxCleanModule = require('./clean/linux.js') 
+const darwinCleanModule = require('./clean/darwin.js') 
 const darwinScanModule = require('./scan/darwin.js')
 const sudo = require('sudo-prompt');
 const linuxScanModule = require('./scan/linux.js') 
@@ -205,7 +206,7 @@ async function installBleachbit() {
     if (process.platform == "linux") {
         await linuxCleanModule.installBleachbit()
     } else if (process.platform == "darwin") {
-
+        await darwinCleanModule.installBleachbit()
     } else {
 
     }
@@ -215,7 +216,7 @@ async function initProgressClean() {
     if (process.platform == "linux") {
         await linuxCleanModule.initProgress()
     } else if (process.platform == "darwin") {
-
+        await darwinCleanModule.initProgress()
     } else {
 
     }
@@ -225,7 +226,7 @@ async function runBleachBit() {
     if (process.platform == "linux") {
         linuxCleanModule.doClean()
     } else if (process.platform == "darwin") {
-
+        darwinCleanModule.doClean()
     } else {
 
     }
@@ -233,9 +234,9 @@ async function runBleachBit() {
 
 async function checkCleanProgress() {
     if (process.platform == "linux") {
-        await linuxCleanModule.checkProgressClean()
+        return await linuxCleanModule.checkProgressClean()
     } else if (process.platform == "darwin") {
-
+        return await darwinCleanModule.checkProgressClean()
     } else {
 
     }
@@ -245,7 +246,8 @@ async function isBleachbitInstalled() {
     if (process.platform == "linux") {
         await linuxCleanModule.isInstallBleachbit()
     } else if (process.platform == "darwin") {
-
+        result = await darwinCleanModule.isInstallBleachbit()
+        return result
     } else {
         
     }

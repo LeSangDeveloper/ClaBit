@@ -75,6 +75,7 @@ async function handleClickActivate() {
             } catch (error) {
                 responseClamavIsInstalled = false;
             }
+            await sleep(1000)
         }
 
         var responseIsInstalledBleachbit
@@ -90,12 +91,13 @@ async function handleClickActivate() {
             await window.invoker.installBleachbit();
         }
 
-        while (responseClamavIsInstalled == false) {
+        while (responseIsInstalledBleachbit == false) {
             try {
                 responseIsInstalledBleachbit = await window.invoker.isInstalledBleachbit()
             } catch {
                 responseIsInstalledBleachbit = false
             }
+            await sleep(1000)
         }
 
         $(".activate-fragment").css("display", "none")
