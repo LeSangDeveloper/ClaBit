@@ -1,4 +1,6 @@
 var isHandlingClickActivate = false;
+var isHandlingClickScan = false
+var each6HoursScanJob;
 
 document.querySelector('#buttonActive').addEventListener('click', () => {
     handleClickActivate()
@@ -15,6 +17,35 @@ document.querySelector('#buttonScan').addEventListener('click', () => {
 document.querySelector("#linkOpenWindow").addEventListener('click', () => {
     openChildWindow()
 })
+
+document.querySelector('#isEach6HoursScan').addEventListener('click', () => {
+    if ($('#isEach6HoursScan').prop('checked')) {
+        start6HoursSchedule(true)
+    } else {
+        clearInterval(each6HoursScanJob)
+    }
+})
+
+start6HoursSchedule($('#isEach6HoursScan').prop('checked'))
+startWatcher($('#isRealTimeScan').prop('checked'))
+
+async function start6HoursSchedule(isEnableScheduler) {
+    if (isEnableScheduler) {
+        console.log("Start Schedule job")
+        each6HoursScanJob = setInterval(() => {
+        if (!isHandlingClickScan) {
+            console.log("Running scheduling...")
+            handleClickScan()
+        }
+        // TODO remove test seconds
+    }, 180000)
+    }
+}
+
+async function startWatcher(isEnableWatcher) {
+    console.log("Start Realtime job")
+
+}
 
 async function openChildWindow() {
     numberOfWindows = await window.invoker.checkOpenWindowNumber();
@@ -63,6 +94,7 @@ async function handleClickActivate() {
 
 
 async function handleClickScan() {
+    isHandlingClickScan = true
     $('#linkOpenWindow').css('display', 'none')
     document.querySelector('#buttonScan').disabled = true
     $('#scanProgressBar').css('width', '0%')
@@ -85,6 +117,7 @@ async function handleClickScan() {
     $('#linkOpenWindow').css('display', 'block')
     $("#scanProgressBar").css('width', '100%') 
     document.querySelector('#buttonScan').disabled = false
+    isHandlingClickScan = false
 }
 
 async function handleClickClean() {
