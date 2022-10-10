@@ -69,6 +69,14 @@ async function handleClickActivate() {
             await window.invoker.installClamav();
         }
 
+        while (responseClamavIsInstalled == false) {
+            try {
+                responseClamavIsInstalled = await window.invoker.isInstalledClamav()
+            } catch (error) {
+                responseClamavIsInstalled = false;
+            }
+        }
+
         var responseIsInstalledBleachbit
         try {
             responseIsInstalledBleachbit = await window.invoker.isInstalledBleachbit()
@@ -80,6 +88,14 @@ async function handleClickActivate() {
             const information2 = document.getElementById('loading')
             information2.innerText = `INSTALLING.....`
             await window.invoker.installBleachbit();
+        }
+
+        while (responseClamavIsInstalled == false) {
+            try {
+                responseIsInstalledBleachbit = await window.invoker.isInstalledBleachbit()
+            } catch {
+                responseIsInstalledBleachbit = false
+            }
         }
 
         $(".activate-fragment").css("display", "none")

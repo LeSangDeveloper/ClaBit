@@ -1,5 +1,6 @@
 const {BrowserWindow, ipcMain} = require('electron')
 const linuxCleanModule = require('./clean/linux.js') 
+const darwinScanModule = require('./scan/darwin.js')
 const sudo = require('sudo-prompt');
 const linuxScanModule = require('./scan/linux.js') 
 const path = require('path')
@@ -98,7 +99,8 @@ async function isClamavInstalled() {
     if (process.platform == "linux") {
         await linuxScanModule.isInstallClamav()
     } else if (process.platform == "darwin") {
-
+        result = await darwinScanModule.isInstallClamav()
+        return result
     } else {
 
     }
@@ -108,7 +110,7 @@ async function installClamav() {
     if (process.platform == "linux") {
         linuxScanModule.installClamav()
     } else if (process.platform == "darwin") {
-
+        darwinScanModule.installClamav()
     } else {
 
     }
@@ -118,9 +120,9 @@ async function runClamscan() {
     if (process.platform == "linux") {
         linuxScanModule.doScan()
     } else if (process.platform == "darwin") {
-
+        darwinScanModule.doScan()
     } else {
-
+        
     }
 }
 
@@ -128,7 +130,7 @@ async function initProgressScan() {
     if (process.platform == "linux") {
         await linuxScanModule.initProgressScan()
     } else if (process.platform == "darwin") {
-
+        await darwinScanModule.initProgressScan()
     } else {
 
     }
@@ -139,7 +141,8 @@ async function checkClamScanProgress() {
         result = await linuxScanModule.checkProgressScan()
         return result
     } else if (process.platform == "darwin") {
-
+        result = await darwinScanModule.checkProgressScan()
+        return result
     } else {
 
     }
@@ -149,7 +152,8 @@ function getQtyOfQuarantineFile() {
     if (process.platform == "linux") {
         return linuxScanModule.getQtyOfQuarantineFile()
     } else if (process.platform == "darwin") {
-
+        result = darwinScanModule.getQtyOfQuarantineFile()
+        return result
     } else {
 
     }
@@ -159,7 +163,8 @@ function getQtyOfInfectedFile() {
     if (process.platform == "linux") {
         return linuxScanModule.getQtyOfInfectedFile()
     } else if (process.platform == "darwin") {
-
+        result = darwinScanModule.getQtyOfInfectedFile()
+        return result
     } else {
 
     }
@@ -169,7 +174,8 @@ function getAllQuarantineFiles() {
     if (process.platform == "linux") {
         return linuxScanModule.getAllQuarantineFiles()
     } else if (process.platform == "darwin") {
-
+        result = darwinScanModule.getAllQuarantineFiles()
+        return result
     } else {
 
     }
@@ -179,7 +185,7 @@ function burnFile(file) {
     if (process.platform == "linux") {
         return linuxScanModule.burnFile(file)
     } else if (process.platform == "darwin") {
-
+        return darwinScanModule.burnFile(file)
     } else {
 
     }
@@ -189,7 +195,7 @@ function allowFile(file, oldFullPath) {
     if (process.platform == "linux") {
         return linuxScanModule.allowFile(file, oldFullPath)
     } else if (process.platform == "darwin") {
-
+        return darwinScanModule.burnFile(file, oldFullPath)
     } else {
 
     }
