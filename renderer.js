@@ -26,9 +26,6 @@ document.querySelector('#isEach6HoursScan').addEventListener('click', () => {
     }
 })
 
-start6HoursSchedule($('#isEach6HoursScan').prop('checked'))
-startWatcher($('#isRealTimeScan').prop('checked'))
-
 async function start6HoursSchedule(isEnableScheduler) {
     if (isEnableScheduler) {
         console.log("Start Schedule job")
@@ -89,6 +86,8 @@ async function handleClickActivate() {
         $(".function-fragment").css("display", "block")
         isHandlingClickActivate = false;
         document.querySelector('#buttonActive').disabled = false
+        start6HoursSchedule($('#isEach6HoursScan').prop('checked'))
+        startWatcher($('#isRealTimeScan').prop('checked'))
     }
 }
 
