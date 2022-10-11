@@ -67,6 +67,16 @@ module.exports.doScan = async () => {
   }
 }
 
+module.exports.doScanWithFileName = async (fileName) => {
+  fullCmd = homePath + '/clamav/bin/clamscan ' + fileName
+  try {
+    var {stdout, stderr} = await exec(fullCmd) 
+  } catch (e) {
+    stdout = e.stdout
+  } 
+  console.log(stdout)
+}
+
 module.exports.checkProgressScan = () => {
   ratio = lstScannedFile.length / lstFileFromLSCmd.length 
   return ratio

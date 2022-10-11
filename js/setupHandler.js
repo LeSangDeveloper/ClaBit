@@ -7,6 +7,8 @@ const {app} = require('electron')
 const linuxScanModule = require('./scan/linux.js') 
 const path = require('path')
 const chokidar = require('chokidar')
+// var watch = require('recursive-watch')
+var fs = require('fs')
 
 var fileWatcher = null;
 
@@ -100,22 +102,26 @@ module.exports.setupCommonHandler = () => {
     })
 
     ipcMain.handle('start-scan-realtime', async () => {
-        fileWatcher = chokidar.watch(app.getPath('home'), {
-            ignored: /[\/\\]\./,
+        const fileWatcher = chokidar.watch(app.getPath('home'), {
+            ignored: /(^|[/\\])\../,
             persistent: true,
             depth: 0,
-        })
-
-        fileWatcher.on('add', function(path) {
-            console.log("add " + path)
-        }).on('addDir', function(path) {
-            console.log("add Dir " + path)
-        })
+           })
+        
+           fileWatcher.on('add', (path) => {
+                console.log(path)
+           })
+        // fs.watch(app.getPath('home'), function (event, filename) {
+        //     if (event == 'change') {
+        //         darwinScanModule.doScan()
+        //     }
+        //   })
+        // fs.unwatchFile(app.getPath('home') + '/.dbus')
     })
 
     ipcMain.handle('stop-scan-realtime', async () => {
         if (fileWatcher != null) {
-            watcher.close().then(() => console.log('closed'));
+            fileWatcher.close().then(() => console.log('closed'));
         }
     })
 }
@@ -136,6 +142,16 @@ async function installClamav() {
         linuxScanModule.installClamav()
     } else if (process.platform == "darwin") {
         darwinScanModule.installClamav()
+    } else {
+
+    }
+}
+
+async function runClamscanWithFileName(fileName) {
+    if (process.platform == "linux") {
+        linuxScanModule.doScanWithFileName(fileName)
+    } else if (process.platform == "darwin") {
+        darwinScanModule.doScanWithFileName(fileName)
     } else {
 
     }

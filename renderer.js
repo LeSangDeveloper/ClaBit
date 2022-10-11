@@ -18,9 +18,19 @@ document.querySelector("#linkOpenWindow").addEventListener('click', () => {
     openChildWindow()
 })
 
-document.querySelector('#isEach6HoursScan').addEventListener('click', () => {
+document.querySelector('#isEach6HoursScan').addEventListener('change', () => {
+    console.log("staate change")
     if ($('#isEach6HoursScan').prop('checked')) {
         start6HoursSchedule(true)
+    } else {
+        clearInterval(each6HoursScanJob)
+    }
+})
+
+document.querySelector('#isRealTimeScan').addEventListener('change', () => {
+    console.log("staate change")
+    if ($('#isRealTimeScan').prop('checked')) {
+        startWatcher()
     } else {
         clearInterval(each6HoursScanJob)
     }
@@ -39,9 +49,14 @@ async function start6HoursSchedule(isEnableScheduler) {
     }
 }
 
-async function startWatcher(isEnableWatcher) {
+async function startWatcher() {
     console.log("Start Realtime job")
     window.invoker.startScanRealtime()
+}
+
+async function stopWatcher() {
+    console.log("Stop Realtime job")
+    window.invoker.stopScanRealtime()
 }
 
 async function openChildWindow() {
