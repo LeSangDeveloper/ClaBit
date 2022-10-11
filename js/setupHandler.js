@@ -3,8 +3,12 @@ const linuxCleanModule = require('./clean/linux.js')
 const darwinCleanModule = require('./clean/darwin.js') 
 const darwinScanModule = require('./scan/darwin.js')
 const sudo = require('sudo-prompt');
+const {app} = require('electron')
 const linuxScanModule = require('./scan/linux.js') 
 const path = require('path')
+const chokidar = require('chokidar')
+
+var fileWatcher = null;
 
 module.exports = {} = {}
 module.exports.setupScanHandler = () => {
@@ -93,6 +97,26 @@ module.exports.setupCommonHandler = () => {
         })
     
         win.loadFile('./html/child_window.html')
+    })
+
+    ipcMain.handle('start-scan-realtime', async () => {
+        fileWatcher = chokidar.watch(app.getPath('home'), {
+            ignored: /[\/\\]\./,
+            persistent: true,
+            depth: 0,
+        })
+
+        fileWatcher.on('add', function(path) {
+            console.log("add " + path)
+        }).on('addDir', function(path) {
+            console.log("add Dir " + path)
+        })
+    })
+
+    ipcMain.handle('stop-scan-realtime', async () => {
+        if (fileWatcher != null) {
+            watcher.close().then(() => console.log('closed'));
+        }
     })
 }
 
