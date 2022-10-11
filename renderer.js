@@ -41,7 +41,7 @@ async function start6HoursSchedule(isEnableScheduler) {
 
 async function startWatcher(isEnableWatcher) {
     console.log("Start Realtime job")
-
+    window.invoker.startScanRealtime()
 }
 
 async function openChildWindow() {

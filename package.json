@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "bootstrap": "^5.2.2",
+    "chokidar": "^3.5.3",
     "electron-squirrel-startup": "^1.0.0",
     "sudo-prompt": "^9.2.1"
   },

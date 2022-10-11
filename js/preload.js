@@ -25,5 +25,7 @@ contextBridge.exposeInMainWorld('invoker', {
     doClean: () => ipcRenderer.invoke('do-clean'),
 
     checkOpenWindowNumber: () => ipcRenderer.invoke('check-open-window-number'),
+    startScanRealtime: () => ipcRenderer.invoke('start-scan-realtime'),
+    stopScanRealtime: () => ipcRenderer.invoke('stop-scan-realtime'),
     openChildWindow: () => ipcRenderer.invoke('open-child-window'),
 })
