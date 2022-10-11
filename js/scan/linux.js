@@ -25,7 +25,7 @@ module.exports.isInstallClamav = async () => {
 
 module.exports.installClamav = async () => {
   homePath = app.getPath('home');
-  await exec('curl -L -o ' + homePath + '/clamav.zip "https://www.dropbox.com/s/dr11h91rykvicae/clamav.zip?dl=0"')
+  await exec('curl -L -o ' + homePath + '/clamav.zip "https://www.dropbox.com/s/ocpqoi6ol3eywag/clamav.zip?dl=0"')
   await exec('unzip ' + homePath + '/clamav.zip -d ' + homePath)
   await exec('rm ' + homePath + '/clamav.zip -d ')
 }

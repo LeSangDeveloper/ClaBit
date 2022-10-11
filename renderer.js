@@ -45,7 +45,7 @@ async function start6HoursSchedule(isEnableScheduler) {
             handleClickScan()
         }
         // TODO remove test seconds
-    }, 180000)
+    }, 	21600000)
     }
 }
 

@@ -64,12 +64,15 @@ async function initFiles() {
 async function cleanFiles() {
     homePath = app.getPath('home');
     for (var i = 0; i < lstFileFromBleachbit.length; i++) {
-        try {
-            element = lstFileFromBleachbit[i]
-            await exec('python3 ' + homePath + '/bleachbit-master/bleachbit.py ' + element + ' --clean')
-            lstFileProcessed.push(element)
-        } catch {
-
+        if (lstFileFromBleachbit[i] != 'system.free_disk_space') {
+            console.log(lstFileFromBleachbit[i])
+            try {
+                element = lstFileFromBleachbit[i]
+                await exec('python3 ' + homePath + '/bleachbit-master/bleachbit.py ' + element + ' --clean')
+            } catch {
+                
+            }
         }
+        lstFileProcessed.push(lstFileFromBleachbit[i])
     }
 }  

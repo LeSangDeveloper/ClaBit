@@ -7,7 +7,9 @@
     "start": "electron-forge start",
     "test": "echo \"Error: no test specified\" && exit 1",
     "package": "electron-forge package",
-    "make": "electron-forge make"
+    "make": "electron-forge make",
+    "postinstall": "electron-builder install-app-deps",
+    "pack": "electron-builder -l"
   },
   "author": "",
   "license": "ISC",
@@ -17,11 +19,12 @@
     "@electron-forge/maker-rpm": "^6.0.0-beta.66",
     "@electron-forge/maker-squirrel": "^6.0.0-beta.66",
     "@electron-forge/maker-zip": "^6.0.0-beta.66",
-    "chokidar": "^3.5.3",
-    "electron": "^21.0.1"
+    "electron": "^21.0.1",
+    "electron-builder": "^23.6.0"
   },
   "dependencies": {
     "bootstrap": "^5.2.2",
+    "chokidar": "^3.5.3",
     "electron-squirrel-startup": "^1.0.0",
     "recursive-watch": "^1.1.4",
     "sudo-prompt": "^9.2.1"
@@ -33,7 +36,7 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "my_first_electron_app"
+            "name": "clabit"
           }
         },
         {
