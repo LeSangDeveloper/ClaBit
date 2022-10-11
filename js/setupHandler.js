@@ -1,10 +1,11 @@
 const {BrowserWindow, ipcMain} = require('electron')
 const linuxCleanModule = require('./clean/linux.js') 
-const darwinCleanModule = require('./clean/darwin.js') 
-const darwinScanModule = require('./scan/darwin.js')
-const sudo = require('sudo-prompt');
+const darwinCleanModule = require('./clean/darwin.js')
+const windowCleanModule = require('./clean/win32.js') 
 const {app} = require('electron')
 const linuxScanModule = require('./scan/linux.js') 
+const darwinScanModule = require('./scan/darwin.js')
+const windowScanModule = require('./scan/win32.js')
 const path = require('path')
 const chokidar = require('chokidar')
 // var watch = require('recursive-watch')
@@ -109,14 +110,8 @@ module.exports.setupCommonHandler = () => {
            })
         
            fileWatcher.on('add', (path) => {
-                console.log(path)
+                runClamscanWithFileName(path)
            })
-        // fs.watch(app.getPath('home'), function (event, filename) {
-        //     if (event == 'change') {
-        //         darwinScanModule.doScan()
-        //     }
-        //   })
-        // fs.unwatchFile(app.getPath('home') + '/.dbus')
     })
 
     ipcMain.handle('stop-scan-realtime', async () => {
@@ -133,7 +128,8 @@ async function isClamavInstalled() {
         result = await darwinScanModule.isInstallClamav()
         return result
     } else {
-
+        result = await windowScanModule.isInstallClamav()
+        return result
     }
 }
 
@@ -143,7 +139,7 @@ async function installClamav() {
     } else if (process.platform == "darwin") {
         darwinScanModule.installClamav()
     } else {
-
+        windowScanModule.installClamav()
     }
 }
 
@@ -153,7 +149,7 @@ async function runClamscanWithFileName(fileName) {
     } else if (process.platform == "darwin") {
         darwinScanModule.doScanWithFileName(fileName)
     } else {
-
+        windowScanModule.doScanWithFileName(fileName)
     }
 }
 
@@ -163,7 +159,7 @@ async function runClamscan() {
     } else if (process.platform == "darwin") {
         darwinScanModule.doScan()
     } else {
-        
+        windowScanModule.doScan()
     }
 }
 
@@ -173,7 +169,7 @@ async function initProgressScan() {
     } else if (process.platform == "darwin") {
         await darwinScanModule.initProgressScan()
     } else {
-
+        await windowScanModule.initProgressScan()
     }
 }
 
@@ -185,7 +181,8 @@ async function checkClamScanProgress() {
         result = await darwinScanModule.checkProgressScan()
         return result
     } else {
-
+        result = await windowScanModule.checkProgressScan()
+        return result
     }
 }
 
@@ -196,7 +193,8 @@ function getQtyOfQuarantineFile() {
         result = darwinScanModule.getQtyOfQuarantineFile()
         return result
     } else {
-
+        result = windowScanModule.getQtyOfQuarantineFile()
+        return result
     }
 }
 
@@ -207,7 +205,7 @@ function getQtyOfInfectedFile() {
         result = darwinScanModule.getQtyOfInfectedFile()
         return result
     } else {
-
+        result = windowScanModule.getQtyOfInfectedFile()
     }
 }
 
@@ -218,7 +216,7 @@ function getAllQuarantineFiles() {
         result = darwinScanModule.getAllQuarantineFiles()
         return result
     } else {
-
+        result = windowScanModule.getAllQuarantineFiles()
     }
 }
 
@@ -228,7 +226,7 @@ function burnFile(file) {
     } else if (process.platform == "darwin") {
         return darwinScanModule.burnFile(file)
     } else {
-
+        return windowScanModule.burnFile(file)
     }
 }
 
@@ -236,9 +234,9 @@ function allowFile(file, oldFullPath) {
     if (process.platform == "linux") {
         return linuxScanModule.allowFile(file, oldFullPath)
     } else if (process.platform == "darwin") {
-        return darwinScanModule.burnFile(file, oldFullPath)
+        return linuxScanModule.allowFile(file, oldFullPath)
     } else {
-
+        return windowScanModule.allowFile(file, oldFullPath)
     }
 }
 
@@ -248,7 +246,7 @@ async function installBleachbit() {
     } else if (process.platform == "darwin") {
         await darwinCleanModule.installBleachbit()
     } else {
-
+        await windowCleanModule.installBleachbit()
     }
 }
 
@@ -258,7 +256,7 @@ async function initProgressClean() {
     } else if (process.platform == "darwin") {
         await darwinCleanModule.initProgress()
     } else {
-
+        await windowCleanModule.initProgress()
     }
 }
 
@@ -268,7 +266,7 @@ async function runBleachBit() {
     } else if (process.platform == "darwin") {
         darwinCleanModule.doClean()
     } else {
-
+        windowCleanModule.doClean()
     }
 }
 
@@ -278,7 +276,7 @@ async function checkCleanProgress() {
     } else if (process.platform == "darwin") {
         return await darwinCleanModule.checkProgressClean()
     } else {
-
+        return await windowCleanModule.checkProgressClean()
     }
 }
 
@@ -289,6 +287,7 @@ async function isBleachbitInstalled() {
         result = await darwinCleanModule.isInstallBleachbit()
         return result
     } else {
-        
+        result = await windowCleanModule.isInstallBleachbit()
+        return result
     }
 }
